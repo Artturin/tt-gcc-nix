@@ -102,27 +102,37 @@
       {
         packages = {
           default = self.packages."${system}".tt-gcc;
-          tt-gcc = tt-gccLambda pkgs;
+          tt-gcc = (tt-gccLambda pkgs).wrapped-cc;
           inherit pkgs;
         };
 
-        checks = {
-          simple = pkgs.runCommand "test" { nativeBuildInputs = [ self.packages.${system}.tt-gcc ]; } ''
-            mkdir -p $out
-            $CC -mwormhole ${./test.c} -o $out/test.c
-            #$CC ${./test.c} -o $out/test.c
-          '';
-          #cc-wrapper = pkgs.tests.cc-wrapper.default.override (
-          #  let
-          #    stdenv = pkgs.stdenv.override {
-          #      cc = self.packages.${system}.tt-gcc;
-          #    };
-          #  in
-          #  {
-          #    inherit stdenv;
-          #  }
-          #);
-        };
+        checks =
+          let
+            runCommand =
+              name: env:
+              pkgs.runCommandWith {
+                inherit name;
+                derivationArgs = env;
+                stdenv = (pkgs.stdenvAdapters.overrideCC pkgs.stdenv self.packages.${system}.tt-gcc);
+              };
+          in
+          {
+            simple = runCommand "test" { } ''
+              mkdir -p $out
+              $CC -mblackhole ${./test.c} -o $out/test
+              #$CC ${./test.c} -o $out/test
+            '';
+            #cc-wrapper = pkgs.tests.cc-wrapper.default.override (
+            #  let
+            #    stdenv = pkgs.stdenv.override {
+            #      cc = self.packages.${system}.tt-gcc;
+            #    };
+            #  in
+            #  {
+            #    inherit stdenv;
+            #  }
+            #);
+          };
 
         #apps.default = utils.lib.mkApp {
         #  drv = self.packages."${system}".default;
