@@ -36,39 +36,64 @@
 
             crossOverlays = [
               (final: prev: {
-                stdenv = prev.stdenvAdapters.overrideCC prev.stdenv (
-                  prev.stdenv.cc.override {
-                    bintools = prev.stdenv.cc.bintools.override {
-                      bintools = prev.buildPackages.callPackage (
-                        { texinfo, flex, gmp, isl, mpfr, libmpc }:
-                        prev.stdenv.cc.bintools.bintools.overrideAttrs (previousAttrs: {
-                          nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [
-                            texinfo
-                            flex
-                          ];
-                          buildInputs = previousAttrs.buildInputs ++ [
-                            gmp
-                            isl
-                            # configure:6290: checking for isl 0.15 or later
-                            # configure:6303: gcc -o conftest -g -O2      -lisl -lmpc -lmpfr -lgmp conftest.c  -lisl -lgmp >&5
-                            # /nix/store/81xsp348yfgmaan9r5055mcdjfw7a8wc-binutils-2.42/bin/ld: cannot find -lmpc: No such file or directory
-                            # /nix/store/81xsp348yfgmaan9r5055mcdjfw7a8wc-binutils-2.42/bin/ld: cannot find -lmpfr: No such file or directory
-                            # collect2: error: ld returned 1 exit status
-                            mpfr
-                            libmpc
-                          ];
-                          version = "2.39";
-                          src = (
-                            pkgs.fetchurl {
-                              url = "https://github.com/ThePerfectComputer/sfpi-binutils/archive/ef96897f5209541d2c6b3464e40430d5cb02b1f6.tar.gz";
-                              sha256 = "sha256-NlHelM9+QpMhPbYBQLUqjclqHEVW/go2RBfC8Zvlw3c=";
-                            }
-                          );
-                        })
-                      ) { };
-                    };
-                  }
-                );
+                #stdenv = prev.stdenvAdapters.overrideCC prev.stdenv (
+                #  prev.stdenv.cc.override {
+                #    bintools = prev.stdenv.cc.bintools.override {
+                #      bintools = prev.buildPackages.callPackage (
+                #        {
+                #          texinfo,
+                #          flex,
+                #          gmp,
+                #          isl,
+                #          mpfr,
+                #          libmpc,
+                #          gettext,
+                #        }:
+                #        (prev.stdenv.cc.bintools.bintools.override { enableShared = false; }).overrideAttrs
+                #          (previousAttrs: {
+                #            nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [
+                #              texinfo
+                #              flex
+                #              gettext # probably not necessary
+                #            ];
+                #            buildInputs = previousAttrs.buildInputs ++ [
+                #              gmp
+                #              isl
+                #              # configure:6290: checking for isl 0.15 or later
+                #              # configure:6303: gcc -o conftest -g -O2      -lisl -lmpc -lmpfr -lgmp conftest.c  -lisl -lgmp >&5
+                #              # /nix/store/81xsp348yfgmaan9r5055mcdjfw7a8wc-binutils-2.42/bin/ld: cannot find -lmpc: No such file or directory
+                #              # /nix/store/81xsp348yfgmaan9r5055mcdjfw7a8wc-binutils-2.42/bin/ld: cannot find -lmpfr: No such file or directory
+                #              # collect2: error: ld returned 1 exit status
+                #              mpfr
+                #              libmpc
+                #            ];
+                #            version = "2.39";
+                #            src = (
+                #              pkgs.fetchurl {
+                #                url = "https://github.com/ThePerfectComputer/sfpi-binutils/archive/ef96897f5209541d2c6b3464e40430d5cb02b1f6.tar.gz";
+                #                sha256 = "sha256-NlHelM9+QpMhPbYBQLUqjclqHEVW/go2RBfC8Zvlw3c=";
+                #              }
+                #            );
+
+                #            #enableParallelBuilding = false;
+
+                #            #configureFlags = lib.remove "--enable-64-bit-bfd" previousAttrs.configureFlags;
+
+                #            preConfigure = ''
+                #              CONFIGURE_MTIME_REFERENCE=$(mktemp configure.mtime.reference.XXXXXX)
+                #              find . \
+                #                -executable \
+                #                -type f \
+                #                -exec touch -r {} "$CONFIGURE_MTIME_REFERENCE" \; \
+                #                -exec sed -i s_/usr/bin/file_file_g {} \;    \
+                #                -exec touch -r "$CONFIGURE_MTIME_REFERENCE" {} \;
+                #              rm -f "$CONFIGURE_MTIME_REFERENCE"
+                #            '';
+                #          })
+                #      ) { };
+                #    };
+                #  }
+                #);
               })
             ];
 
@@ -84,8 +109,8 @@
         checks = {
           simple = pkgs.runCommand "test" { nativeBuildInputs = [ self.packages.${system}.tt-gcc ]; } ''
             mkdir -p $out
-            #$CC -mwormhole ${./test.c} -o $out/test.c
-            $CC ${./test.c} -o $out/test.c
+            $CC -mwormhole ${./test.c} -o $out/test.c
+            #$CC ${./test.c} -o $out/test.c
           '';
           #cc-wrapper = pkgs.tests.cc-wrapper.default.override (
           #  let
@@ -108,6 +133,8 @@
           mkShell {
             nativeBuildInputs = [ self.packages.${system}.tt-gcc ];
           };
+
+        formatter = pkgs.pkgsBuildBuild.nixfmt-rfc-style;
       }
     )
     // {

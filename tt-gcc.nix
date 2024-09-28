@@ -37,7 +37,7 @@ let
       '';
 
     })
-  );
+  ) { };
 
   # NOTE: use the correct `callPackage` for everything so the dependency offsets will be correct.
   # If simply getting `gmp` from the arguments at the top
@@ -53,7 +53,7 @@ let
       libopcodes,
       libbfd,
     }:
-    buildPackages.binutils-unwrapped.overrideAttrs (previousAttrs: {
+    (buildPackages.binutils-unwrapped.override { enableShared = false; }).overrideAttrs (previousAttrs: {
       # 2.38 is the closest ver in nixpkgs.
       version = "2.39";
       src = (
