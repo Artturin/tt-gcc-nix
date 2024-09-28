@@ -1,7 +1,9 @@
 {
+  lib,
   flex,
   gcc10,
   fetchurl,
+  bintools-wrapped,
 }:
 gcc10.cc.overrideAttrs (previousAttrs: {
   version = "10.2.0";
@@ -17,6 +19,23 @@ gcc10.cc.overrideAttrs (previousAttrs: {
     # Found in https://gibsonic.org/tools/2019/08/08/gcc_building.html
     flex
   ];
+
+  buildInputs = (lib.remove (lib.elemAt previousAttrs.buildInputs 4) previousAttrs.buildInputs) ++ [
+    bintools-wrapped
+  ];
+
+  configureFlags =
+    (lib.remove "--enable-threads=single" (
+      lib.remove (lib.elemAt previousAttrs.configureFlags 21) (
+        lib.remove (lib.elemAt previousAttrs.configureFlags 22) previousAttrs.configureFlags
+      )
+    ))
+    ++ [
+      "--with-as=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-as"
+      "--with-ld=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-ld"
+      "--disable-threads"
+      "--target=riscv32-unknown-elf"
+    ];
 
   # TODO: why not automatically patched in https://github.com/NixOS/nixpkgs/blob/49be301a59b894ffe96a964a525cfa6bcdab5cf6/pkgs/stdenv/generic/setup.sh#L1400
   postPatch = ''
