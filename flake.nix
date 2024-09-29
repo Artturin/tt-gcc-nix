@@ -42,7 +42,7 @@
 
             overlays = [
               (final: prev: {
-                newlib = prev.newlib.overrideAttrs {
+                newlib = prev.newlib.overrideAttrs (previousAttrs: {
                   version = "4.1.0";
                   # `enable-newlib-retargetable-locking` causes `free(): invalid pointer`
                   configureFlags = lib.remove "--enable-newlib-retargetable-locking" previousAttrs.configureFlags;
