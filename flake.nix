@@ -43,22 +43,22 @@
 
             overlays = [
               (final: prev: {
-                newlib = prev.newlib.overrideAttrs {
-                  version = "4.1.0";
-                  configureFlags = [
-                    "--with-newlib"
-                    "--disable-shared"
-                    "--disable-threads"
-                    "--disable-multilib"
-                  ];
-                  src = (
-                    pkgs.fetchurl {
-                      url = "https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz";
-                      sha256 = "sha256-8pbjcvUTJCJNOHzBFtw3pr05cZh1Z0b5OisC6aXUAVQ=";
-                    }
-                  );
+                #newlib = prev.newlib.overrideAttrs {
+                #  version = "4.1.0";
+                #  configureFlags = [
+                #    "--with-newlib"
+                #    "--disable-shared"
+                #    "--disable-threads"
+                #    "--disable-multilib"
+                #  ];
+                #  src = (
+                #    pkgs.fetchurl {
+                #      url = "https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz";
+                #      sha256 = "sha256-8pbjcvUTJCJNOHzBFtw3pr05cZh1Z0b5OisC6aXUAVQ=";
+                #    }
+                #  );
 
-                };
+                #};
                 gcc-fork = prev.callPackage ./pkgs/gcc.nix { };
                 binutils-fork-unwrapped = prev.callPackage ./pkgs/binutils.nix { };
                 bintools-wrapped = prev.wrapBintoolsWith {
@@ -113,13 +113,12 @@
             simple =
               runCommand "test"
                 {
-                  #NIX_DEBUG = 1;
-                  hardeningDisable = [ "all" ];
+                  NIX_DEBUG = 3;
                 }
                 ''
                   mkdir -p $out
-                  $CC -mblackhole ${./test.c} -o $out/test
-                  #$CC ${./test.c} -o $out/test
+                  $CC ${./test.c} -o $out/test
+                  $CC -mblackhole ${./test.c} -o $out/test-wormhole
                 '';
             #cc-wrapper = pkgs.tests.cc-wrapper.default.override (
             #  let

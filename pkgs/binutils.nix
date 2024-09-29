@@ -35,10 +35,6 @@
     libmpc
   ];
 
-  configureFlags = previousAttrs.configureFlags ++ [
-    "--target=riscv32-unknown-elf"
-  ];
-
   #NIX_DEBUG = 7;
 
   preConfigure = ''
