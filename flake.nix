@@ -109,7 +109,7 @@
             simple =
               runCommand "test"
                 {
-                  NIX_DEBUG = 3;
+                  NIX_DEBUG = 1;
                 }
                 ''
                   mkdir -p $out
@@ -122,18 +122,15 @@
           # Already `__splicedPackages` so the dependency attributes will work correctly.
           with pkgs;
           mkShell.override { stdenv = self.packages.${system}.pkgs.stdenv-fork; } {
-            depsBuildBuild =
-              [
-                # tools like `grep` and such here
-              ];
-            nativeBuildInputs =
-              [
-                # compilers and such here
-              ];
-            buildInputs =
-              [
-                # libraries and such here
-              ];
+            depsBuildBuild = [
+              # tools like `grep` and such here
+            ];
+            nativeBuildInputs = [
+              # compilers and such here
+            ];
+            buildInputs = [
+              # libraries and such here
+            ];
           };
 
         formatter = pkgs.pkgsBuildBuild.nixfmt-rfc-style;
