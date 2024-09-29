@@ -25,11 +25,23 @@ gcc10.cc.overrideAttrs (previousAttrs: {
   ];
 
   configureFlags =
-    (lib.remove "--enable-threads=single" (
-      lib.remove (lib.elemAt previousAttrs.configureFlags 21) (
-        lib.remove (lib.elemAt previousAttrs.configureFlags 22) previousAttrs.configureFlags
-      )
-    ))
+    let
+      flagsToRemove = [
+        "--enable-threads=single"
+        "--enable-lto"
+        "--disable-libstdcxx-pch"
+        "--enable-__cxa_atexit"
+        "--enable-long-long"
+        "--enable-nls"
+      ];
+    in
+    (lib.filter (
+      flag: !(lib.any (unwanted: flag == unwanted) flagsToRemove)
+    ) previousAttrs.configureFlags)
+    #lib.remove (lib.elemAt previousAttrs.configureFlags 21) (
+    #  lib.remove (lib.elemAt previousAttrs.configureFlags 22) previousAttrs.configureFlags
+    #)
+    #))
     ++ [
       "--with-as=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-as"
       "--with-ld=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-ld"
