@@ -123,9 +123,21 @@
           };
 
         devShells.default =
+          # Already `__splicedPackages` so the dependency attributes will work correctly.
           with pkgs;
-          mkShell {
-            nativeBuildInputs = [ self.packages.${system}.pkgs.stdenv-fork ];
+          mkShell.override { stdenv = self.packages.${system}.pkgs.stdenv-fork; } {
+            depsBuildBuild =
+              [
+                # tools like `grep` and such here
+              ];
+            nativeBuildInputs =
+              [
+                # compilers and such here
+              ];
+            buildInputs =
+              [
+                # libraries and such here
+              ];
           };
 
         formatter = pkgs.pkgsBuildBuild.nixfmt-rfc-style;
