@@ -43,19 +43,19 @@
             overlays = [
               (final: prev: {
                 newlib = prev.newlib.overrideAttrs {
-                  #  version = "4.1.0";
+                  version = "4.1.0";
                   configureFlags = [
                     "--enable-newlib-io-long-double"
                     "--enable-newlib-io-long-long"
                     "--enable-newlib-io-c99-formats"
                     "--enable-newlib-register-fini"
                   ];
-                    src = (
-                      pkgs.fetchurl {
-                        url = "https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz";
-                        sha256 = "sha256-8pbjcvUTJCJNOHzBFtw3pr05cZh1Z0b5OisC6aXUAVQ=";
-                      }
-                    );
+                  src = (
+                    pkgs.fetchurl {
+                      url = "https://sourceware.org/pub/newlib/newlib-4.1.0.tar.gz";
+                      sha256 = "sha256-8pbjcvUTJCJNOHzBFtw3pr05cZh1Z0b5OisC6aXUAVQ=";
+                    }
+                  );
                 };
 
                 gcc-fork = prev.callPackage ./pkgs/gcc.nix { };
