@@ -1,0 +1,15 @@
+*~
+,*
+.*.swp
+.*.swo
+.\#*
+\#*\#
+.idea/
+.vscode/
+.helix/
+outputs/
+result-*
+result
+repl-result-*
+tags
+/source/
