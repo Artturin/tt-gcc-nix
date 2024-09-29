@@ -27,12 +27,6 @@ gcc10.cc.overrideAttrs (previousAttrs: {
   configureFlags =
     let
       flagsToRemove = [
-        "--enable-threads=single"
-        "--enable-lto"
-        "--disable-libstdcxx-pch"
-        "--enable-__cxa_atexit"
-        "--enable-long-long"
-        "--enable-nls"
         "--with-as"
         "--with-ld"
       ];
