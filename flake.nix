@@ -109,12 +109,13 @@
             simple =
               runCommand "test"
                 {
+                  # Goes up to 7
                   NIX_DEBUG = 1;
                 }
                 ''
                   mkdir -p $out
-                  $CC ${./test.c} -o $out/test
-                  $CC -mblackhole ${./test.c} -o $out/test-wormhole
+                  $CC -v ${./test.c} -o $out/test
+                  $CC -v -mblackhole ${./test.c} -o $out/test-wormhole
                 '';
           };
 
