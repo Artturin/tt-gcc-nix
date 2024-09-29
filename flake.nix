@@ -94,7 +94,8 @@
       in
       {
         packages = {
-          default = self.packages."${system}".tt-gcc;
+          default = self.packages.${system}.tt-gcc;
+          tt-gcc = self.packages.${system}.pkgs.stdenv-fork.cc;
           inherit pkgs;
         };
 
@@ -124,7 +125,7 @@
         devShells.default =
           with pkgs;
           mkShell {
-            #nativeBuildInputs = [ self.packages.${system}.tt-gcc ];
+            nativeBuildInputs = [ self.packages.${system}.pkgs.stdenv-fork ];
           };
 
         formatter = pkgs.pkgsBuildBuild.nixfmt-rfc-style;
