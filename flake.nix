@@ -17,7 +17,7 @@
       inherit (inputs.nixpkgs) lib;
       inherit (inputs) self;
     in
-    inputs.utils.lib.eachSystem [ "x86_64-linux" ] (
+    inputs.utils.lib.eachDefaultSystem (
       system:
       let
         #pkgs = inputs.nixpkgs.legacyPackages.${system};
