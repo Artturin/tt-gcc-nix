@@ -33,15 +33,13 @@ gcc10.cc.overrideAttrs (previousAttrs: {
         "--enable-__cxa_atexit"
         "--enable-long-long"
         "--enable-nls"
+        "--with-as"
+        "--with-ld"
       ];
     in
     (lib.filter (
-      flag: !(lib.any (unwanted: flag == unwanted) flagsToRemove)
+      flag: !(lib.any (unwanted: lib.hasPrefix unwanted flag) flagsToRemove)
     ) previousAttrs.configureFlags)
-    #lib.remove (lib.elemAt previousAttrs.configureFlags 21) (
-    #  lib.remove (lib.elemAt previousAttrs.configureFlags 22) previousAttrs.configureFlags
-    #)
-    #))
     ++ [
       "--with-as=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-as"
       "--with-ld=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-ld"
