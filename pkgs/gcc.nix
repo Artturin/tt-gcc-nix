@@ -36,6 +36,9 @@ gcc10.cc.overrideAttrs (previousAttrs: {
       "--disable-threads"
     ];
 
+  passthru = previousAttrs.passthru // {
+    inherit bintools-wrapped;
+  };
   # TODO: why not automatically patched in https://github.com/NixOS/nixpkgs/blob/49be301a59b894ffe96a964a525cfa6bcdab5cf6/pkgs/stdenv/generic/setup.sh#L1400
   postPatch = ''
     substituteInPlace libcc1/configure \

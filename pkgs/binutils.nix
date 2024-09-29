@@ -37,9 +37,8 @@
       -exec touch -r "$CONFIGURE_MTIME_REFERENCE" {} \;
     rm -f "$CONFIGURE_MTIME_REFERENCE"
   '';
-  #configureFlags = previousAtts.configureFlags ++ [
-  #  "--with-abi=ilp32"
-  #  "--with-arch=rv32i"
-  #];
+  configureFlags = previousAttrs.configureFlags ++ [
+    "--disable-sim"
+  ];
 
 })
