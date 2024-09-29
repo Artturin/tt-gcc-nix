@@ -9,7 +9,6 @@
   fetchurl,
 }:
 (bintools.bintools.override { enableShared = false; }).overrideAttrs (previousAttrs: {
-  # 2.38 is the closest ver in nixpkgs.
   version = "2.39";
   src = (
     fetchurl {

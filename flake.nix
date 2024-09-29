@@ -16,7 +16,6 @@
     let
       inherit (inputs.nixpkgs) lib;
       inherit (inputs) self;
-      tt-gccLambda = pkgs: pkgs.callPackage ./tt-gcc.nix { };
     in
     inputs.utils.lib.eachDefaultSystem (
       system:
@@ -87,6 +86,7 @@
                 # TODO: just do `stdenv =`
                 # There's a stubborn issue with `infinite recursion encountered`
                 stdenv-fork = prev.buildPackages.stdenvAdapters.overrideCC prev.stdenv prev.buildPackages.wrapped-gcc-fork;
+                hello = prev.hello.override { stdenv = final.stdenv-fork; };
               })
             ];
 
@@ -95,7 +95,6 @@
       {
         packages = {
           default = self.packages."${system}".tt-gcc;
-          #tt-gcc = (tt-gccLambda pkgs).wrapped-cc;
           inherit pkgs;
         };
 
@@ -120,21 +119,7 @@
                   $CC ${./test.c} -o $out/test
                   $CC -mblackhole ${./test.c} -o $out/test-wormhole
                 '';
-            #cc-wrapper = pkgs.tests.cc-wrapper.default.override (
-            #  let
-            #    stdenv = pkgs.stdenv.override {
-            #      cc = self.packages.${system}.tt-gcc;
-            #    };
-            #  in
-            #  {
-            #    inherit stdenv;
-            #  }
-            #);
           };
-
-        #apps.default = utils.lib.mkApp {
-        #  drv = self.packages."${system}".default;
-        #};
 
         devShells.default =
           with pkgs;
@@ -147,10 +132,5 @@
     )
     // {
       inherit lib;
-      overlays.default = (
-        final: prev: {
-          tt-gcc = tt-gccLambda prev;
-        }
-      );
     };
 }
