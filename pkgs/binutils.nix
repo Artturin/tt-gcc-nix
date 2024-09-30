@@ -1,4 +1,5 @@
 {
+  lib,
   texinfo,
   flex,
   gmp,
@@ -37,8 +38,18 @@
       -exec touch -r "$CONFIGURE_MTIME_REFERENCE" {} \;
     rm -f "$CONFIGURE_MTIME_REFERENCE"
   '';
-  configureFlags = previousAttrs.configureFlags ++ [
-    "--disable-sim"
-  ];
+
+  configureFlags =
+    let
+      flagsToRemove =
+        [
+        ];
+    in
+    (lib.filter (
+      flag: !(lib.any (unwanted: lib.hasPrefix unwanted flag) flagsToRemove)
+    ) previousAttrs.configureFlags)
+    ++ [
+      "--disable-sim"
+    ];
 
 })
