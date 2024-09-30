@@ -52,6 +52,11 @@
                   );
                 });
 
+                binutils-unwrapped_2_39 = prev.callPackage ./pkgs/binutils_2_39 {
+                  autoreconfHook = prev.autoreconfHook269;
+                  noSysDirs = true;
+
+                };
                 gcc-fork = prev.callPackage ./pkgs/gcc.nix { };
                 binutils-fork-unwrapped = prev.callPackage ./pkgs/binutils.nix { };
                 bintools-wrapped = prev.wrapBintoolsWith {

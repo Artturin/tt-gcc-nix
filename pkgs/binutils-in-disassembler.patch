@@ -1,0 +1,13 @@
+diff --git a/include/opcode/riscv.h b/include/opcode/riscv.h
+index 09cb85d6..e697d8eb 100644
+--- a/include/opcode/riscv.h
++++ b/include/opcode/riscv.h
+@@ -25,6 +25,8 @@
+ #include <stdlib.h>
+ #include <stdint.h>
+
++#define IN_DISASSEMBLER
++
+ typedef uint64_t insn_t;
+
+ static inline unsigned int riscv_insn_length (insn_t insn)
