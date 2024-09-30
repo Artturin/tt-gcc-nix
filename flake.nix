@@ -1,6 +1,4 @@
 {
-  description = "runs programs without installing them";
-
   inputs = {
     nixpkgs.url = "github:NixOS/nixpkgs/nixpkgs-unstable";
     utils.url = "github:numtide/flake-utils";
