@@ -4,18 +4,20 @@
   flex,
   gmp,
   isl,
-  bintools,
   fetchFromGitHub,
+  binutils-unwrapped_2_38,
 }:
-(bintools.bintools.override { enableShared = false; }).overrideAttrs (previousAttrs: {
-  version = "2.39";
+(binutils-unwrapped_2_38.override { enableShared = false; }).overrideAttrs (previousAttrs: {
+  version = "2.36.1";
 
   src = fetchFromGitHub {
-    owner = "ThePerfectComputer";
+    owner = "tenstorrent";
     repo = "sfpi-binutils";
-    rev = "ef96897f5209541d2c6b3464e40430d5cb02b1f6";
-    sha256 = "sha256-HJk5ffsdBGT2TZFeCn5m+OzOwlFSvKbcK/cd7MKxp7A=";
+    rev = "629e241cd35899ae705da9cea63ff4a20104b9a0";
+    sha256 = "sha256-vR1RkhEkCG+LOyJ7fQJOE9IAjQhzlzCPCbN3oM9GqAU=";
   };
+
+  patches = [ ];
 
   nativeBuildInputs = previousAttrs.nativeBuildInputs ++ [
     texinfo
@@ -42,15 +44,15 @@
 
   configureFlags =
     let
-      flagsToRemove =
-        [
-        ];
+      flagsToRemove = [
+      ];
     in
     (lib.filter (
       flag: !(lib.any (unwanted: lib.hasPrefix unwanted flag) flagsToRemove)
     ) previousAttrs.configureFlags)
     ++ [
       "--disable-sim"
+      "--disable-gdb"
     ];
 
 })
