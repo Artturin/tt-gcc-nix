@@ -1,19 +1,19 @@
 {
   lib,
   flex,
-  gcc10,
+  gcc12,
   fetchFromGitHub,
   bintools-wrapped,
 
 }:
-gcc10.cc.overrideAttrs (previousAttrs: {
-  version = "10.2.0";
+gcc12.cc.overrideAttrs (previousAttrs: {
+  version = "12.2.0";
 
   src = fetchFromGitHub {
     owner = "tenstorrent";
     repo = "sfpi-gcc";
-    rev = "9b05394f53925372db0330098916a94fde47bda5";
-    sha256 = "sha256-L29yCD52Wv/cxbgeOPerpZYtQ8HiVYJbmNkMpCmMev8=";
+    rev = "b5f8792c7a61bae49dd9e80a4647ad7cf7a29ea0";
+    sha256 = "sha256-QhbM/GvoCFUCoy0WlbFfb90CajbexwexFHZzfwvPYUE=";
   };
 
 
@@ -38,8 +38,8 @@ gcc10.cc.overrideAttrs (previousAttrs: {
       flag: !(lib.any (unwanted: lib.hasPrefix unwanted flag) flagsToRemove)
     ) previousAttrs.configureFlags)
     ++ [
-      "--with-as=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-as"
-      "--with-ld=${bintools-wrapped}/bin/${gcc10.cc.stdenv.targetPlatform.config}-ld"
+      "--with-as=${bintools-wrapped}/bin/${gcc12.cc.stdenv.targetPlatform.config}-as"
+      "--with-ld=${bintools-wrapped}/bin/${gcc12.cc.stdenv.targetPlatform.config}-ld"
       "--disable-threads"
     ];
 
