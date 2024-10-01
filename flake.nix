@@ -112,8 +112,8 @@
                 }
                 ''
                   mkdir -p $out
-                  $CC -v ${./test.c} -o $out/test
-                  $CC -v -mblackhole ${./test.c} -o $out/test-wormhole
+                  $CC -v ${./tests/test.c} -o $out/test
+                  $CC -v -mblackhole ${./tests/test.c} -o $out/test-wormhole
                 '';
           };
 
